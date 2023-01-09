@@ -11,6 +11,7 @@ import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @SpringBootTest
 public class PostBulkInsertTest {
@@ -31,7 +32,7 @@ public class PostBulkInsertTest {
         stopWatch.start();
 
 
-        var posts = IntStream.range(0, 10000 * 100)
+        var posts = LongStream.range(0, 10000 * 300)
                 .parallel()
                 .mapToObj(i -> getEasyRandom(i).nextObject(Post.class))
                 .toList();
@@ -39,24 +40,25 @@ public class PostBulkInsertTest {
         stopWatch.stop();
 
         var queryStopWatch = new StopWatch();
-        System.out.println("--------------------------------------------------------------------------객체 생성 시간: " + stopWatch.getTotalTimeSeconds());
+
         queryStopWatch.start();
 
 
         postRepository.bulkInsert(posts);
         queryStopWatch.stop();
-        System.out.println("--------------------------------------------------------------------------DB 인서트 시간: " + stopWatch.getTotalTimeSeconds());
+        System.out.println("--------------------------------------------------------------------------객체 생성 시간: " + stopWatch.getTotalTimeSeconds());
+        System.out.println("--------------------------------------------------------------------------DB 인서트 시간: " + queryStopWatch.getTotalTimeSeconds());
 
 
     }
 
-    private static EasyRandom getEasyRandom(int i) {
+    private static EasyRandom getEasyRandom(Long l) {
         return PostFixtureFactory
                 .get(
                         3L,
-                        LocalDate.of(2022, 12, 1),
+                        LocalDate.of(1978, 1, 1),
                         LocalDate.of(2023, 1, 10),
-                        "contents test " + i
+                        l
                 );
     }
 }

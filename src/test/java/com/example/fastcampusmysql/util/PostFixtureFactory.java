@@ -10,7 +10,7 @@ import static org.jeasy.random.FieldPredicates.*;
 
 public class PostFixtureFactory {
 
-    static public EasyRandom get(Long memberId, LocalDate firstDate, LocalDate lastDate, String contents) {
+    static public EasyRandom get(Long memberId, LocalDate firstDate, LocalDate lastDate, Long tmpNumber) {
         var idPredicate = named("id")
                 .and(ofType(Long.class))
                 .and(inClass(Post.class));
@@ -27,7 +27,8 @@ public class PostFixtureFactory {
                 .excludeField(idPredicate)
                 .dateRange(firstDate, lastDate)
                 .randomize(memberPredicate, () -> memberId)
-                .randomize(contentsPredicate, () -> contents);
+                .randomize(contentsPredicate, () -> "캘린더 내용 테스트 " + tmpNumber)
+                .seed(tmpNumber);
 
         return new EasyRandom(param);
     }
